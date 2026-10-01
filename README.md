@@ -59,24 +59,24 @@
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:**Searches the listings data for items matching keyword, size, maximum price.
+- **Inputs:** description (str),size (str or None) is optional, max_price (float or None).<!-- name and type each: `max_price` (float), not "a price" -->
+- **Returns:**A list of matching listing dicts each containing id,title,description,category,style_tags,size,condition, price, colors, brand, platform, ordered by keyword relevance score up to SEARCH_RESULT_LIMIT.
+- **When it has nothing:**Returns an empty list [].
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:**Generates personalized styling ideas by combining a selected item with existing clothes from the user's wardrobe using an LLM.
+- **Inputs:**new_item (dict), wardrobe (dict with an 'items' list of dicts).
+- **Returns:**A non-empty string containing 1–2 outfit combination suggestions referencing items from the wardrobe.
+- **When it has nothing:**Returns general styling ideas and outfit combinations for the item without referencing wardrobe pieces.
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:**Creates a short, engaging 2–4 sentence social media style caption about the find, mentioning its price, platform, and outfit vibe.
+- **Inputs:**outfit (str), new_item (dict).
+- **Returns:**A string containing a 2–4 sentence social media caption highlighting the item, price, platform, and styling vibe.
+- **When it has nothing:**Returns a fallback caption mentioning the item, price, and platform without outfit details instead of error.
 
 ---
 
@@ -93,13 +93,16 @@
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:**If search_listings returns an empty list, record an error message in session['error'] suggesting what the user could change (e.g. increase max price or widen search) and stop. Otherwise, take the first result as selected_item and proceed to suggest_outfit."
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:**Regex and string parsing (extracting max price with regex under \$?(\d+), size with regex size\s+([A-Za-z0-9/]+), and remaining words as description). <!-- regex, string splitting, or asking the model — say which -->
 
-**What moves through the session:** <!-- which fields, in what order -->
+**What moves through the session:**A session is the history of what is happening through an agent loop. It's going to take the user query, then the parsed inputs, search results, the selected item, the wardrobe, outfit suggestion, and fit card and errors. And all these are going to carry through the session.
+
+query and wardrobe (initial inputs) -> parsed (from parse_query) -> search_results (from search_listings) -> selected_item (first item from search results) -> outfit_suggestion (from suggest_outfit) -> fit_card (from create_fit_card), with error populated if search returns empty.
+<!-- which fields, in what order -->
 
 ---
 
