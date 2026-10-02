@@ -25,6 +25,7 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
+This is an important factor to ensure we can successfully fetch items from the wardrobe. While 5 out of 5 would be ideal, 4 out of 5 (an 80% success rate) is a practically achievable target. Since the initial search relies on keyword matching, it might occasionally miss items if the exact phrasing isn't used.
 <!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
      "my search is a plain keyword match and some phrasings will miss" is a
      real answer. -->
@@ -37,6 +38,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
+It is important for the agent to stop if no matching results are found; otherwise, we cannot distinguish between an item actually retrieved from the wardrobe and one the agent made up (hallucinated). Therefore, it is crucial to have a strict 5 out of 5 success rate here.
 <!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
      about this path? -->
 
@@ -63,7 +65,7 @@ Given a query that matches no listings, the agent stops before calling
 ---
 
 ## 4. Something about the fit card
-
+In 3 out of 5 tries, the generated fit card must include the item's price.
 <!-- YOU WRITE THIS ONE.
 
      The fit card calls a model, so the same input can produce different words
@@ -78,13 +80,13 @@ Given a query that matches no listings, the agent stops before calling
 
 
 **Why this target:**
-
+If a user likes everything about an outfit but finally checks the price and it's out of their budget, it results in a very disappointing experience and wasted time. Providing the price upfront in the fit card helps the customer decide whether to proceed. The target is 3 out of 5 because the model might occasionally format the card differently and miss the explicit price label, but it should be present most of the time.
 
 
 ---
 
 ## 5. Your choice
-
+When the model cannot be reached, the agent returns a specific error message stating the model is unavailable, in 5 out of 5 tries.
 <!-- YOU WRITE THIS ONE TOO.
 
      Pick something you actually care about getting right. Speed, the empty
@@ -95,7 +97,7 @@ Given a query that matches no listings, the agent stops before calling
 
 
 **Why this target:**
-
+This is a gatekeeper criterion that requires a strict 5 out of 5 success rate. If the model is unavailable, the agent must return a clear error message. This helps us distinguish between actual retrieved wardrobe data and fallback behavior. While the model can suggest styles based on its general knowledge, the user must explicitly know that the suggestion is made up and not actually from the wardrobe.
 
 
 ---
