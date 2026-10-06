@@ -107,8 +107,62 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     """
     session = new_session(query, wardrobe)
 
-    # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+    session = new_session(query, wardrobe)
+    iterations = 0
+    
+    while True:
+        iterations += 1
+        trace.check_iterations(iterations)
+        
+        # 3. Parse the query using simple regex
+        import re
+        max_price = None
+        price_match = re.search(r'\$(\d+(?:\.\d{2})?)', query)
+        if price_match:
+            max_price = float(price_match.group(1))
+            
+        size = None
+        size_match = re.search(r'\bsize\s+([a-zA-Z0-9/]+)', query, re.IGNORECASE)
+        if size_match:
+            size = size_match.group(1)
+            
+        description = query.replace('under', '')
+        if price_match:
+            description = description.replace(price_match.group(0), '')
+        if size_match:
+            description = description.replace(size_match.group(0), '')
+        description = description.strip()
+        
+        session["parsed"] = {
+            "description": description,
+            "size": size,
+            "max_price": max_price
+        }
+        
+        # 4. Call search_listings
+        search_results = search_listings(description, size, max_price)
+        session["search_results"] = search_results
+        
+        # ⚠️ THE BRANCH: If nothing came back
+        if not search_results:
+            session["error"] = "No matching items found. Try removing the size filter, increasing your price limit, or using fewer keywords."
+            break # Exit loop, returning early
+            
+        # 5. Choose an item
+        selected_item = search_results[0]
+        session["selected_item"] = selected_item
+        
+        # 6. Call suggest_outfit
+        outfit = suggest_outfit(selected_item, wardrobe)
+        session["outfit_suggestion"] = outfit
+        
+        # 7. Call create_fit_card
+        fit_card = create_fit_card(outfit, selected_item)
+        session["fit_card"] = fit_card
+        
+        # Run completed successfully
+        break
+
     return session
 
 
