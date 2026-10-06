@@ -46,6 +46,7 @@ It is important for the agent to stop if no matching results are found; otherwis
 
 ## 3. Something about state
 
+
 <!-- YOU WRITE THIS ONE.
 
      How would you know that the item your search found is the same item the
@@ -55,17 +56,16 @@ It is important for the agent to stop if no matching results are found; otherwis
      look like state failure — it looks like a tool problem. Something that
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
-
+In 5 out of 5 tries, the exact item ID returned by the initial search must be the exact same item ID passed into the suggest_outfit tool.
 
 
 **Why this target:**
 
-
+Because the first search call is what provides the item id and there is no reason for the next tool to not receive the same item id.
 
 ---
 
 ## 4. Something about the fit card
-In 3 out of 5 tries, the generated fit card must include the item's price.
 <!-- YOU WRITE THIS ONE.
 
      The fit card calls a model, so the same input can produce different words
@@ -76,7 +76,7 @@ In 3 out of 5 tries, the generated fit card must include the item's price.
      mentions the price? Two different items producing the same opening
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
-
+In 3 out of 5 tries, the generated fit card must include the item's price.
 
 
 **Why this target:**
