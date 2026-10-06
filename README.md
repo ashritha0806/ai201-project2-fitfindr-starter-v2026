@@ -41,8 +41,7 @@
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
 
-
-
+FitFindr is an AI agent that acts as a personal stylist and shopper. A user provides a natural language request specifying the type of clothing they want, along with an optional size and max price. The agent searches listings to find a matching item, analyzes the user's existing wardrobe to suggest 1 or 2 personalized outfits incorporating the new find, and at last generates a social media caption about the outfit and the item's price. If the agent can not find a matching item, it will stop and ask the user to adjust their search criteria.
 ---
 
 ## Tool Inventory
@@ -191,15 +190,16 @@ Nothing beats the effortless, 90s-grunge cool of fresh white sneakers paired wit
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:*I asked the AI to help me implement the three tools in tools.py, specifically how to handle the size filtering.
+- *What came back:*The AI suggested using the `re` (regex) module with word boundaries (`\b`) to ensure the size string is matched as a distinct word rather than a plain substring. It wrote the implementation for `search_listings` using this logic.
+- *What I changed:* I used the AI's regex approach for the size filtering, and then asked it to help structure the planning loop in `agent.py` to correctly branch when `search_listings` returns an empty list, ensuring the state is passed via the `session` dictionary.
+
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:*I gave the AI my five finalized acceptance criteria and gave it a strict prompt: "For each one, tell me exactly how you would test it using only what the sentence says. Don't suggest improvements — just tell me what you'd do.
+- *What came back:*The AI returned a step-by-step test plan for all five criteria. For example, for Criterion 3, it explained exactly how it would intercept the `item_id` from the search tool and string-compare it against the input to the suggest outfit tool. 
+- *What I changed:*The AI was able to clearly explain how to test every single criterion based purely on my wording, it confirmed my sentences were objective and measurable. I kept my wording exactly as it was, knowing it passed the clarity test.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
