@@ -25,7 +25,7 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
-This is an important factor to ensure we can successfully fetch items from the wardrobe. While 5 out of 5 would be ideal, 4 out of 5 (an 80% success rate) is a practically achievable target. Since the initial search relies on keyword matching, it might occasionally miss items if the exact phrasing isn't used.
+This is an important factor to ensure we can successfully fetch items from the wardrobe. While 5 out of 5 would be ideal, 4 out of 5 (an 80% success rate) is a practically achievable target. Since the initial search relies on keyword matching, it might occasionally miss items if the exact phrasing is not used.
 <!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
      "my search is a plain keyword match and some phrasings will miss" is a
      real answer. -->
@@ -38,7 +38,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
-It is important for the agent to stop if no matching results are found; otherwise, we cannot distinguish between an item actually retrieved from the wardrobe and one the agent made up (hallucinated). Therefore, it is crucial to have a strict 5 out of 5 success rate here.
+It is important for the agent to stop if no matching results are found; otherwise, we cannot distinguish between an item actually retrieved from the wardrobe and one the agent made up. Therefore, it is crucial to have a strict 5 out of 5 success rate here.
 <!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
      about this path? -->
 
