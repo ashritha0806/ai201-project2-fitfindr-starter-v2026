@@ -17,6 +17,7 @@ import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
 from generate import ModelUnavailable
+from mcp_client import call_tool
 
 
 # ── session state ─────────────────────────────────────────────────────────────
@@ -138,12 +139,20 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "size": size,
             "max_price": max_price
         }
+
+        # # 4. Call search_listings
+        # search_results = search_listings(description, size, max_price)
         
-        # 4. Call search_listings
-        search_results = search_listings(description, size, max_price)
+        # 4. Call search_listings via MCP
+        search_results = call_tool("search_listings", {
+            "description": description,
+            "size": size,
+            "max_price": max_price,
+        })
+
         session["search_results"] = search_results
         
-        # ⚠️ THE BRANCH: If nothing came back
+        # THE BRANCH: If nothing came back
         if not search_results:
             session["error"] = "No matching items found. Try removing the size filter, increasing your price limit, or using fewer keywords."
             break # Exit loop, returning early
