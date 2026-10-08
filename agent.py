@@ -142,7 +142,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
         # # 4. Call search_listings
         # search_results = search_listings(description, size, max_price)
-        
+
         # 4. Call search_listings via MCP
         search_results = call_tool("search_listings", {
             "description": description,
@@ -150,6 +150,12 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "max_price": max_price,
         })
 
+        trace.step(
+            "search_listings",
+            inputs={"description":description, "size":size, "max_price":max_price},
+            returned=search_results,
+        )
+        
         session["search_results"] = search_results
         
         # THE BRANCH: If nothing came back
@@ -161,14 +167,32 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         selected_item = search_results[0]
         session["selected_item"] = selected_item
         
-        # 6. Call suggest_outfit
-        outfit = suggest_outfit(selected_item, wardrobe)
-        session["outfit_suggestion"] = outfit
-        
-        # 7. Call create_fit_card
-        fit_card = create_fit_card(outfit, selected_item)
-        session["fit_card"] = fit_card
-        
+        try:
+            # 6. Call suggest_outfit
+            outfit = suggest_outfit(selected_item, wardrobe)
+            session["outfit_suggestion"] = outfit
+
+            trace.step(
+                "suggest_outfit",
+                inputs={"new_item": selected_item, "wardrobe": wardrobe},
+                returned=outfit
+            )
+
+            
+            # 7. Call create_fit_card
+            fit_card = create_fit_card(outfit, selected_item)
+            session["fit_card"] = fit_card
+
+            trace.step(
+                "create_fit_card",
+                inputs={"outfit": outfit, "new_item": selected_item},
+                returned=fit_card
+            )
+
+
+        except ModelUnavailable:
+            session["error"] = "AI model is unvaialable. Please check your internet connection and verify your API key in .env file."      
+            break
         # Run completed successfully
         break
 

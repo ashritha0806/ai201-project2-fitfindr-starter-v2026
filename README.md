@@ -283,12 +283,51 @@ that produced it:
 **Happy path**
 
 ```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two outfit ideas incorporating your new Y2K butterfly baby tee and pieces from your wardrobe:  **Outf…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Living out my ultimate 2000s pop-star fantasy in this dreamy Y2K Baby Tee — Butterfly Print! 🦋✨ Grabbed this n…
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   Here are two outfit ideas incorporating your new Y2K butterfly baby tee and pieces from your wardrobe:
+
+**Outfit 1: Classic Y2K Streetwear**
+* **Top:** Y2K Butterfly Baby Tee
+* **Bottoms:** Baggy straight-leg jeans (dark wash)
+* **Outerwear:** Black cropped zip hoodie
+* **Footwear:** Chunky white sneakers
+* **Accessories:** Black crossbody bag
+
+*Why it works:* The fitted, cropped silhouette of the baby tee balances out the volume of the baggy straight-leg jeans for a classic early-2000s proportion play. Layering the black cropped zip hoodie on top keeps you warm while showing off the waistline, and the chunky sneakers and crossbody bag tie the casual, everyday street look together.
+
+**Outfit 2: Edgy Contrast**
+* **Top:** Y2K Butterfly Baby Tee
+* **Bottoms:** Wide-leg khaki trousers
+* **Outerwear:** Vintage black denim jacket
+* **Footwear:** Black combat boots
+* **Accessories:** Brown leather belt, Black crossbody bag
+
+*Why it works:* This look leans into a cool high-low mix by pairing the feminine, playful butterfly print with tougher, structured pieces like the wide-leg khakis and combat boots. Tucking the baby tee in with the brown leather belt defines your waist against the relaxed trousers, and the vintage black denim jacket adds an effortlessly cool outer layer.
+
+  Fit card: Living out my ultimate 2000s pop-star fantasy in this dreamy Y2K Baby Tee — Butterfly Print! 🦋✨ Grabbed this nostalgic little gem for just $18.0 to complete all my baggy-jean-and-combat-boot dreams. It’s live on my depop right now, so run don't walk before I change my mind and keep it!
+0 model calls this session, 2 served from cache
 
 ```
 
 **Empty search**
 
 ```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+
+  No matching items found. Try removing the size filter, increasing your price limit, or using fewer keywords.
 
 ```
 
