@@ -35,6 +35,7 @@ SCENARIOS = [
         "wardrobe": "empty",
         "criterion": None,
     },
+    
     # TODO: add what your criteria 3, 4 and 5 need.
     #
     # Set "criterion" to the number in criteria.md that the scenario tests.
@@ -47,7 +48,29 @@ SCENARIOS = [
     # For a fit-card criterion, you probably want the SAME query listed more
     # than once, or several different items, depending on what your criterion
     # actually says.
-]
+
+    {
+        # State test: checks if the exact item ID passed to the outfit tool matches the search tool (Criterion 3)
+        "name": "state item match",
+        "query": "vintage graphic tee under $30",
+        "wardrobe": "example",
+        "criterion": 3,
+    },
+    {
+        # Fit card test: checks if the fit card includes the item's price (Criterion 4)
+        "name": "fit card includes price",
+        "query": "vintage graphic tee under $30", 
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        # Model unavailable test: checks if we get the specific error message (Criterion 5)
+        "name": "model unavailable error",
+        "query": "vintage graphic tee",
+        "wardrobe": "example",
+        "criterion": 5,
+    },
+]   
 
 WARDROBES = ("example", "empty")
 

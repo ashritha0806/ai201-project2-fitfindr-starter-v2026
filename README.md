@@ -221,16 +221,18 @@ Nothing beats the effortless, 90s-grunge cool of fresh white sneakers paired wit
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1. matching query completes | 4 out of 5 | PASS | PASS |PASS  | PASS | PASS | MET |
-| 2. impossible query stops early | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
-| 3. state item match   | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
-| 4. fit card includes price | 3 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
-| 5. model unavailable error | 5 out of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISS |
+| 1. matching query completes | 4 out of 5 | PASS | PASS |PASS  | PASS | PASS | MET (5/5) |
+| 2. impossible query stops early | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. state item match   | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. fit card includes price | 3 out of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. model unavailable error | 5 out of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISS (0/5) |
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
 ```
+### matching query completes
+
 - stopped early: no
 - selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
 - search_results: 10
@@ -271,6 +273,275 @@ Trace:
       out: Channeling major 2000s street style with this fitted Y2K Baby Tee — Butterfly Print paired with baggy low-slun…
 ```
 
+### impossible query stops early
+
+- Query: `designer ballgown size XXS under $5`
+- Wardrobe: example
+
+**Try 1**
+
+- stopped early: yes — No matching items found. Try removing the size filter, increasing your price limit, or using fewer keywords.
+- selected_item: (none)
+- search_results: 0
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+```
+
+### empty wardrobe
+
+- Query: `denim jacket under $50`
+- Wardrobe: empty
+
+**Try 1**
+
+- stopped early: no
+- selected_item: Denim Jacket — Light Wash, Cropped ($42.0, poshmark)
+- search_results: 7
+
+Outfit suggestion:
+
+```
+Since your wardrobe is currently a blank slate, this light-wash, cropped denim jacket is actually the **ultimate foundational piece** to start with. A cropped jacket is particularly versatile because it naturally defines your waist and elongates your legs, making it easy to balance with different silhouettes. 
+
+Because it’s a "blank canvas," it bridges the gap between casual and chic. Here is some general styling advice and a roadmap of the types of pieces you should look for next to build out your wardrobe around it.
+
+---
+
+### 1. General Styling Rules of Thumb
+* **Play with Proportions (Tight/Loose):** Since the jacket is structured on top and cropped, it looks incredible when paired with high-waisted bottoms or looser, relaxed-fit pants. This creates a balanced "fitted top, relaxed bottom" silhouette.
+* **The Denim-on-Denim Rule:** You *can* wear denim on denim, but with a light-wash jacket, make sure your jeans are either a **very distinct dark wash** (for high contrast) or an **exact matching light wash** (for a monochromatic Canadian-tuxedo look). Avoid mid-treads that almost match, as they can look mismatched.
+* **Layering:** Because of the cropped cut, it looks amazing layered over things that peek out from the bottom (like a longer t-shirt or hoodie hem) to create intentional dimension.
+
+---
+
+### 2. Key Pieces to Add to Your Wardrobe
+
+To make this jacket work hard for you, look for these foundational items next:
+
+#### **Bottoms**
+* **High-Waisted Wide-Leg Trousers (Black, Beige, or Olive):** Because the jacket is cropped, high-waisted pants will hit right at the jacket's hemline, giving you a very chic, put-together shape. Tailored trousers dress down nicely with the casual denim.
+* **Straight-Leg Medium or Dark Wash Jeans:** A classic denim pairing. Straight-leg jeans keep the outfit looking modern rather than dated.
+* **A Slip Skirt or Pleated Tennis Skirt:** The boxy, structured shoulders of the jacket contrast beautifully against the feminine, flowy movement of a skirt. 
+
+#### **Tops (Layers Underneath)**
+* **Basic Ribbed Tank Tops & Crop Tops (White, Black, Gray):** Essential for warm weather. Tucking a tight tank into high-waisted pants with the jacket thrown over top is an effortless, go-to outfit.
+* **Oversized Graphic Tees:** Let the hem of a cool vintage tee peek out from under the cropped jacket for an edgy, streetwear-inspired vibe.
+* **Striped Breton Turtleneck or Crewneck:** Light wash denim and classic French stripes (navy and white or black and white) are a timeless combination that instantly looks chic.
+
+#### **Shoes**
+* **Retro Sneakers (e.g., Adidas Sambas, Nike Air Force 1s, or New Balance):** Keeps the outfit grounded, casual, and street-style ready.
+* **Chunky Black Boots (Doc Martens or Chelsea boots):** Adds a bit of toughness to balance out the light, breezy feel of the jacket.
+* **Pointed-Toe Booties or Strappy Sandals:** Instantly elevates the jacket for a night out or a more dressed-up look.
+
+---
+
+### 3. Three Outfit Formulas to Try First
+
+1. **The Casual Everyday:** White ribbed tank top + high-waisted straight-leg jeans + retro sneakers + the denim jacket.
+2. **High/Low Mix:** Black tailored wide-leg trousers + a simple black t-shirt tucked in + chunky loafers + the denim jacket.
+3. **Feminine Contrast:** A black slip dress or midi skirt + a fitted baby tee + ankle boots + the denim jacket draped over your shoulders.
+```
+
+Fit card:
+
+```
+Building a new wardrobe from scratch? The ultimate foundational piece has officially arrived! 
+
+Channel that effortless, effortless-chic streetwear vibe by tossing this versatile **Denim Jacket — Light Wash, Cropped** over a basic ribbed tank and high-waisted trousers. Grab it now on Poshmark for just $42.0 before someone else steals your new favorite outfit formula!
+```
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket — Light Wash, Cropped, Vintage Levi's 501 Jeans — Medium Wash, 90s Track Jacket — Navy/White Stripe … +4 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Since your wardrobe is currently a blank slate, this light-wash, cropped denim jacket is actually the **ultima…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Building a new wardrobe from scratch? The ultimate foundational piece has officially arrived!   Channel that e…
+```
+### state item match
+
+- Query: `vintage graphic tee under $30`
+- Wardrobe: example
+
+**Try 1**
+
+- stopped early: no
+- selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+- search_results: 10
+
+Outfit suggestion:
+
+```
+Here are two outfit ideas incorporating your new Y2K butterfly baby tee and pieces from your wardrobe:
+
+### Outfit 1: Casual Y2K Streetwear
+*Pair the baby tee with:*
+* **Baggy straight-leg jeans** (Dark wash)
+* **Black cropped zip hoodie** (worn open or layered casually)
+* **Chunky white sneakers**
+* **Black crossbody bag**
+
+**Why it works:** This plays on the classic Y2K silhouette of a fitted, cropped top balanced with baggy, low-key denim. Throwing the black cropped zip hoodie over top keeps the midsection exposed or adds dimension while leaning into the 2000s aesthetic, finished off with chunky sneakers and a practical crossbody.
+
+---
+
+### Outfit 2: Edgy Contrast
+*Pair the baby tee with:*
+* **Wide-leg khaki trousers**
+* **Brown leather belt**
+* **Black combat boots**
+* **Vintage black denim jacket**
+
+**Why it works:** This outfit mixes preppier khaki trousers with the playful, girly butterfly graphic of the baby tee for an effortless high-low contrast. Tucking the baby tee in with the brown leather belt adds definition, while the black combat boots and vintage black denim jacket ground the look with an edgy, worn-in feel.
+```
+
+Fit card:
+
+```
+Channeling peak 2000s pop-star energy with this adorable Y2K Baby Tee — Butterfly Print, featuring the dreamiest nostalgic graphic. Grab this absolute steal for just $18.0 before I change my mind and keep it for myself! Head over to my depop shop right now to claim it before it’s gone. 🦋✨
+```
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two outfit ideas incorporating your new Y2K butterfly baby tee and pieces from your wardrobe:  ### Ou…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channeling peak 2000s pop-star energy with this adorable Y2K Baby Tee — Butterfly Print, featuring the dreamie…
+```
+### fit card includes price
+
+- Query: `vintage graphic tee under $30`
+- Wardrobe: example
+
+**Try 1**
+
+- stopped early: no
+- selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+- search_results: 10
+
+Outfit suggestion:
+
+```
+Since your wardrobe is currently a blank slate ("None" for all listed items), you have the ultimate freedom to build your first complete Y2K-inspired looks around this cute butterfly baby tee! 
+
+Here are two distinct outfit formulas you can create by shopping for a few key companion pieces from your list:
+
+### Outfit 1: The Ultimate Y2K Streetwear Look
+*Pair the baby tee with baggy denim, a hoodie, and sneakers for that classic early 2000s off-duty model vibe.*
+
+*   **Top:** Y2K Butterfly Baby Tee
+*   **Bottoms:** Baggy straight-leg jeans (dark wash)
+*   **Layer (Optional):** Black cropped zip hoodie (worn open or tied around the waist)
+*   **Shoes:** Chunky white sneakers
+*   **Accessories:** Black crossbody bag
+
+**Why it works:** The fitted, cropped silhouette of the baby tee balances out the voluminous, slouchy fit of the baggy dark wash jeans. Adding the cropped zip hoodie and chunky white sneakers completely nails the effortless Y2K aesthetic.
+
+---
+
+### Outfit 2: Casual Retro-Prep
+*Mix the ultra-feminine butterfly graphic with tailored trousers and a vintage jacket for a cool, high-low contrast.*
+
+*   **Top:** Y2K Butterfly Baby Tee
+*   **Bottoms:** Wide-leg khaki trousers
+*   **Accessories:** Brown leather belt (threaded through the trousers)
+*   **Outerwear:** Vintage black denim jacket
+*   **Shoes:** Black combat boots
+
+**Why it works:** Pairing a tight graphic tee with relaxed, wide-leg trousers creates a great proportion play. Tucking in the baby tee and accentuating the waist with a brown leather belt pulls the look together, while the vintage black denim jacket and combat boots add an edgy, timeless finish.
+```
+
+Fit card:
+
+```
+Channel your inner 2000s off-duty model with this sweet **Y2K Baby Tee — Butterfly Print**, featuring the ultimate effortless retro vibe. Grab this nostalgia-soaked staple now on **depop** for just **$18.0** before it flies away!
+```
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Since your wardrobe is currently a blank slate ("None" for all listed items), you have the ultimate freedom to…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channel your inner 2000s off-duty model with this sweet **Y2K Baby Tee — Butterfly Print**, featuring the ulti…
+```
+### model unavailable error
+
+- Query: `vintage graphic tee`
+- Wardrobe: example
+
+**Try 1**
+
+- stopped early: no
+- selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+- search_results: 10
+
+Outfit suggestion:
+
+```
+Here are two outfit ideas featuring your new Y2K butterfly baby tee and pieces from your current wardrobe:
+
+### Outfit 1: Effortless Off-Duty Y2K
+*Pair the baby tee with your baggy straight-leg jeans and the black cropped zip hoodie for a balanced silhouette (fitted top meets loose bottoms).*
+
+* **Top:** Y2K Butterfly Baby Tee
+* **Outerwear:** Black cropped zip hoodie (wear open to show off the graphic)
+* **Bottoms:** Baggy straight-leg jeans (dark wash)
+* **Shoes:** Chunky white sneakers
+* **Bag:** Black crossbody bag
+
+### Outfit 2: Edgy Contrast
+*Combine the feminine, retro butterfly graphic with tougher, utilitarian pieces like black combat boots and denim.*
+
+* **Top:** Y2K Butterfly Baby Tee
+* **Outerwear:** Vintage black denim jacket
+* **Bottoms:** Baggy straight-leg jeans (dark wash)
+* **Shoes:** Black combat boots
+* **Accessories:** Brown leather belt (to add a nice contrast against the all-black and dark wash denim)
+```
+
+Fit card:
+
+```
+Channeling ultimate off-duty bratz energy with this angelic Y2K Baby Tee — Butterfly Print! 🦋✨ Snagged this nostalgic retro gem for just $18.0, and it’s officially live on depop waiting for its next icon. Run, don't walk!
+```
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here are two outfit ideas featuring your new Y2K butterfly baby tee and pieces from your current wardrobe:  ##…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channeling ultimate off-duty bratz energy with this angelic Y2K Baby Tee — Butterfly Print! 🦋✨ Snagged this no…
+```
+
+
 ```
 
 ---
@@ -295,15 +566,13 @@ Trace:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 | matching query completes all three tools | 4 of 5 | MET (5/5) | All 5 tries returned a fit card with the item found and outfit generated. Exceeded the 4/5 target. |
-| 2 | impossible query stops before tool 2 | 5 of 5 | MET (5/5) | All 5 tries with the impossible query returned the early-stop message and never called suggest_outfit. |
-| 3 | item ID in session matches item passed to suggest_outfit | 5 of 5 | MET (5/5) | All 5 tries showed the same item ID (lst_002) from search going into suggest_outfit without change. |
-| 4 | fit card includes the item's price | 3 of 5 | MET (5/5) | All 5 fit cards contained the price string "$18.0". Target was 3/5 so exceeded. |
-| 5 | model unavailable returns specific error message | 5 of 5 | MISSED (0/5) | All 5 tries completed normally — the agent never triggered or surfaced a "model unavailable" message. |
+| 1 |  |  |  |  |
+| 2 |  |  |  |  |
+| 3 |  |  |  |  |
+| 4 |  |  |  |  |
+| 5 |  |  |  |  |
 
 **Diagnoses**
-
-Criterion 5 missed 5 of 5 tries. The failure is in the **tool** (`create_fit_card` in `tools.py`): the tool makes a model call but never catches a connectivity/availability exception and never returns an "unavailable" message. When the model is reachable the agent completes silently; when it is unreachable the exception propagates uncaught rather than returning the expected error string. The loop has no branch for this case either — the session never receives an "error" key from a model failure, so the agent cannot surface it to the user. The fix would be to wrap the model call in `create_fit_card` with a try/except that returns a specific message (e.g., `"Model unavailable — please try again later"`) and add a branch in `run_agent` to stop and surface that message.
 
 
 
@@ -372,7 +641,10 @@ Criterion 5 missed 5 of 5 tries. The failure is in the **tool** (`create_fit_car
 
 ```
 
-**On the MCP move:** In `mcp_server.py`, I registered `search_listings` as an MCP tool using `@mcp.tool()`, wrapping the existing `tools.py` implementation under the alias `_search_listings_impl`. In `agent.py::run_agent`, the direct call `search_listings(description, size, max_price)` was swapped for `call_tool("search_listings", {...})` via `mcp_client.py`. The results coming back were identical — the same list of dicts, same order — confirming the tool was really returning what the spec said and no silent mutation was happening inside the loop.
+**On the MCP move:** <!-- what changed in your code, and whether anything
+behaved differently afterwards. If the rewire didn't work, say exactly where it
+broke — the error text and the last thing that worked. That earns the point in
+full. -->
 
 
 
