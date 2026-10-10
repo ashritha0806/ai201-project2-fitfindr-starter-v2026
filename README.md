@@ -221,15 +221,54 @@ Nothing beats the effortless, 90s-grunge cool of fresh white sneakers paired wit
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. matching query completes | 4 out of 5 | PASS | PASS |PASS  | PASS | PASS | MET |
+| 2. impossible query stops early | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
+| 3. state item match   | 5 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
+| 4. fit card includes price | 3 out of 5 | PASS | PASS | PASS | PASS | PASS | MET |
+| 5. model unavailable error | 5 out of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISS |
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
+```
+- stopped early: no
+- selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+- search_results: 10
+
+Outfit suggestion:
+
+```
+Here is a 2000s-inspired outfit using your new Y2K baby tee and pieces from your wardrobe:
+
+**Outfit: Casual Y2K Streetwear**
+*   **Top:** Y2K Baby Tee — Butterfly Print
+*   **Bottoms:** Baggy straight-leg jeans, dark wash
+*   **Footwear:** Chunky white sneakers
+*   **Outerwear layer (optional):** Black cropped zip hoodie
+*   **Accessories:** Black crossbody bag
+
+**Why it works:** 
+The slim, cropped fit of the baby tee contrasts perfectly with the voluminous, low-slung silhouette of the baggy straight-leg jeans, capturing an authentic early-2000s streetwear look. Tossing on the black cropped zip hoodie keeps the proportions balanced, while the chunky white sneakers and crossbody bag tie the casual, everyday aesthetic together.
+```
+
+Fit card:
+
+```
+Channeling major 2000s street style with this fitted Y2K Baby Tee — Butterfly Print paired with baggy low-slung denim and chunky kicks! Grabbed this absolute gem for just $18.0, and it’s officially available now on depop to complete your ultimate retro rotation. Run, don't walk! 🦋✨
+```
+
+Trace:
+
+```
+[1] search_listings
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: Here is a 2000s-inspired outfit using your new Y2K baby tee and pieces from your wardrobe:  **Outfit: Casual Y…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channeling major 2000s street style with this fitted Y2K Baby Tee — Butterfly Print paired with baggy low-slun…
 ```
 
 ```
@@ -256,13 +295,15 @@ that produced it:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | matching query completes all three tools | 4 of 5 | MET (5/5) | All 5 tries returned a fit card with the item found and outfit generated. Exceeded the 4/5 target. |
+| 2 | impossible query stops before tool 2 | 5 of 5 | MET (5/5) | All 5 tries with the impossible query returned the early-stop message and never called suggest_outfit. |
+| 3 | item ID in session matches item passed to suggest_outfit | 5 of 5 | MET (5/5) | All 5 tries showed the same item ID (lst_002) from search going into suggest_outfit without change. |
+| 4 | fit card includes the item's price | 3 of 5 | MET (5/5) | All 5 fit cards contained the price string "$18.0". Target was 3/5 so exceeded. |
+| 5 | model unavailable returns specific error message | 5 of 5 | MISSED (0/5) | All 5 tries completed normally — the agent never triggered or surfaced a "model unavailable" message. |
 
 **Diagnoses**
+
+Criterion 5 missed 5 of 5 tries. The failure is in the **tool** (`create_fit_card` in `tools.py`): the tool makes a model call but never catches a connectivity/availability exception and never returns an "unavailable" message. When the model is reachable the agent completes silently; when it is unreachable the exception propagates uncaught rather than returning the expected error string. The loop has no branch for this case either — the session never receives an "error" key from a model failure, so the agent cannot surface it to the user. The fix would be to wrap the model call in `create_fit_card` with a try/except that returns a specific message (e.g., `"Model unavailable — please try again later"`) and add a branch in `run_agent` to stop and surface that message.
 
 
 
@@ -331,10 +372,7 @@ that produced it:
 
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything
-behaved differently afterwards. If the rewire didn't work, say exactly where it
-broke — the error text and the last thing that worked. That earns the point in
-full. -->
+**On the MCP move:** In `mcp_server.py`, I registered `search_listings` as an MCP tool using `@mcp.tool()`, wrapping the existing `tools.py` implementation under the alias `_search_listings_impl`. In `agent.py::run_agent`, the direct call `search_listings(description, size, max_price)` was swapped for `call_tool("search_listings", {...})` via `mcp_client.py`. The results coming back were identical — the same list of dicts, same order — confirming the tool was really returning what the spec said and no silent mutation was happening inside the loop.
 
 
 
