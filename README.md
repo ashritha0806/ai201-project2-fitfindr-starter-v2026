@@ -201,6 +201,11 @@ Nothing beats the effortless, 90s-grunge cool of fresh white sneakers paired wit
 - *What came back:*The AI returned a step-by-step test plan for all five criteria. For example, for Criterion 3, it explained exactly how it would intercept the `item_id` from the search tool and string-compare it against the input to the suggest outfit tool. 
 - *What I changed:*The AI was able to clearly explain how to test every single criterion based purely on my wording, it confirmed my sentences were objective and measurable. I kept my wording exactly as it was, knowing it passed the clarity test.
 
+**Moment 3**
+- *I consulted the AI to disambiguate the “failed” versus “passed” outcome logic for Criterion 5, ensuring that a run is marked PASS only when the model‑unavailable exception is actually raised and handled. I got confused on whether to count the failure if the model is unavailable or not. 
+
+- *I asked the AI to audit the evaluation table layout and my thought process for the reasoning of each criteria decisions, confirming that the verdict column correctly reflects the target counts and that each criterion’s pass/fail status is computed as requested for each trial.
+
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 3.
@@ -650,7 +655,8 @@ Trace:
 
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything behaved differently afterwards. If the rewire didn't work, say exactly where it broke — the error text and the last thing that worked. That earns the point in full. -->
+**On the MCP move:**
+I registered 'search_listings' in 'mcp_server.py' using '@mcp.tool()', wrapping the existing implementation from 'tools.py'. In 'agent.py::run_agent', the direct function call was replaced with 'call_tool("search_listings", {...})' via 'mcp_client.py'. The behavior and results remained identical - the client successfully invoked the tool over stdio JSON-RPC, returned the exact same candidate items in identical order, and verified that wrapping tool execution in MCP introduces no mutations into the planning loop state.
 
 ---
 
@@ -687,6 +693,14 @@ However, because the remaining tries (1, 3, and 4) executed over a working live 
 ---
 
 ## What's Still Broken
+
+- **Criterion 5 (Model unavailable error - 2 of 5 passes):**
+The agent's internal fallback logic works when an exception occurs, but the scenario test in 'scenarios.py' relies on natural API error/rate limits rather than an injected offline simulation or mock failure. To pass 5 of 5 consistently without taking down real queries, the test runner would need a mock harness or an invalid key injected specifically for this scenario.
+
+- **Criterion 3 (State item match - 4 of 5 passes):**
+  Try 5 missed because an API dropout occurred during 'create_fit_card', triggering the fallback branch early. While the item ID in 'new_item' matched 'selected_item' into 'suggest_outfit', the run did not complete all 3 trace steps.
+
+I did only one change as per assignment rules and tested the change for 5 times and the results are computed above in the table format..
 
 
 

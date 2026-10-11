@@ -107,8 +107,6 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         than a stack trace. The import is already at the top of this file.
     """
     session = new_session(query, wardrobe)
-
-    session = new_session(query, wardrobe)
     iterations = 0
     
     while True:
