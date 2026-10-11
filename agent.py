@@ -191,8 +191,16 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
 
         except ModelUnavailable:
-            session["error"] = "AI model is unvaialable. Please check your internet connection and verify your API key in .env file."      
+            # Model is unavailable: record error and generate a rule-based fallback card
+            session["error"] = "AI model is unavailable. Styling advice could not be generated."
+            session["outfit_suggestion"] = f"Classic pairing: Pair your {selected_item.get('name', 'item')} with basic essentials from your wardrobe."
+            session["fit_card"] = (
+                f"[Offline Fallback] Found: {selected_item.get('name', 'Item')} "
+                f"for ${selected_item.get('price', 'N/A')} on {selected_item.get('platform', 'marketplace')}. "
+                f"(Model unavailable to generate custom AI fit card)."
+            )
             break
+
         # Run completed successfully
         break
 
