@@ -741,3 +741,18 @@ I did only one change as per assignment rules and tested the change for 5 times 
 ---
 
 📖 **How to run this project: [RUNNING.md](RUNNING.md)**
+
+-----------------------------------------------
+
+## Capstone
+
+**What This Extends**
+I am extending FitFindr (Project 2 / Unit 4 MCP system). FitFindr is a personal stylist and shopper for clothing listings. It searches listings, suggests one or two outfits from the wardrobe, and makes a fit card.
+
+**The Shape**
+Shape A: Deploy and instrument. I am deploying the existing service to Render and adding production instrumentation. This includes structured JSON request logging with timestamps, input queries, response payloads, end-to-end latency tracking, and measured token/cost calculation per run.
+
+**What's Out of Scope**
+1. I am not changing the listings data or how search_listings ranks results.
+2. I am not changing the pacing / retry already in generate.py.
+3. I am not adding multi-agent orchestration or switching model providers.
