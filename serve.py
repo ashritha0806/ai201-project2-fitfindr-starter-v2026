@@ -27,15 +27,16 @@ web server has to be. The reason is worth reading before you deploy: see the
 note above `_one_at_a_time` below — it also decides which gunicorn worker you
 can use.
 
-⚠️ There is deliberately NO logging, NO timing and NO request counting in this
-file. That is unit 9's follow-along: you instrument this yourself, first, and
-then deploy it. A structured log you were handed teaches you nothing about
-what belongs in one — and the timing field is the one everybody skips.
 """
 
 import os
 import sys
 import threading
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import time
+import generate
 
 # config first, and before anything that talks to the model: it loads your .env
 # and fixes the Windows console encoding for every module that imports it.
@@ -89,6 +90,23 @@ app = Flask(__name__)
 #     gunicorn -k gevent serve:app    ← breaks every MCP call you make
 
 _one_at_a_time = threading.Lock()
+LOG_PATH = Path(__file__).parent / "runs.log"
+
+
+# gemini-3.5-flash-lite, paid tier from Google's Gemini API pricing page
+COST_PER_MILLION_INPUT = 0.30
+COST_PER_MILLION_OUTPUT = 2.50
+
+
+def _log_record(record: dict) -> None:
+    """Format and write structured JSON log to stdout and append to runs.log."""
+    line = json.dumps(record)
+    print(f"[STRUCTURED_LOG] {line}", flush=True)
+    try:
+        with LOG_PATH.open("a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except Exception as exc:  # noqa: BLE001
+        print(f"Failed to append to {LOG_PATH}: {exc}", file=sys.stderr, flush=True)
 
 
 @app.get("/health")
@@ -107,9 +125,25 @@ def ask():
                                                 example wardrobe the CLI uses.
     Out:  the session dict from run_agent(), as JSON.
     """
+    start_time = time.monotonic()
+    timestamp = datetime.now(timezone.utc).isoformat()
+
     payload = request.get_json(silent=True) or {}
     query = (payload.get("query") or "").strip()
     if not query:
+        elapsed = round(time.monotonic() - start_time, 4)
+        _log_record(
+            {
+                "timestamp": timestamp,
+                "endpoint": "/ask",
+                "status_code": 400,
+                "query": query,
+                "latency_seconds": elapsed,
+                "tokens": {"prompt": 0, "output": 0, "total": 0},
+                "cost_usd": 0.0,
+                "error": "Missing query field",
+            }
+        )
         # 400 rather than a stack trace: the caller can act on this one.
         return jsonify({"error": "Send JSON with a 'query' field, e.g. "
                                  '{"query": "vintage graphic tee under $30"}'}), 400
@@ -135,15 +169,50 @@ def ask():
             file=sys.stderr,
             flush=True,
         )
-
+    
     failure = None
     session = None
     with _one_at_a_time:
+        tokens_before = generate.token_counts()
         try:
             session = run_agent(query, wardrobe)
         except Exception as exc:  # noqa: BLE001 — a 500 with a sentence beats a hang
             failure = f"{type(exc).__name__}: {exc}"
-
+    
+    elapsed = round(time.monotonic() - start_time, 4)
+    tokens_after = generate.token_counts()
+    prompt_delta = max(0, tokens_after["prompt"] - tokens_before["prompt"])
+    output_delta = max(0, tokens_after["output"] - tokens_before["output"])
+    total_delta = prompt_delta + output_delta
+    cost = round(
+        (prompt_delta / 1_000_000 * COST_PER_MILLION_INPUT)
+        + (output_delta / 1_000_000 * COST_PER_MILLION_OUTPUT),
+        6,
+    )
+    status_code = 500 if failure is not None else 200
+    item_id = (
+        session.get("selected_item", {}).get("id")
+        if isinstance(session, dict) and session.get("selected_item")
+        else None
+    )
+    _log_record(
+        {
+            "timestamp": timestamp,
+            "endpoint": "/ask",
+            "status_code": status_code,
+            "query": query,
+            "selected_item_id": item_id,
+            "has_fit_card": bool(session.get("fit_card")) if isinstance(session, dict) else False,
+            "latency_seconds": elapsed,
+            "tokens": {
+                "prompt": prompt_delta,
+                "output": output_delta,
+                "total": total_delta,
+            },
+            "cost_usd": cost,
+            "error": failure or (session.get("error") if isinstance(session, dict) else None),
+        }
+    )
     # Outside the lock: building a response is not work the next caller should
     # be waiting on.
     if failure is not None:
